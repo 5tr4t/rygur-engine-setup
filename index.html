@@ -6,10 +6,8 @@
 <title>Rygur Engine - Operations Diagnostic</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
 <style>
-  * {
-    margin: 0; padding: 0; box-sizing: border-box;
-  }
-
+  /* Basic styling from previous code */
+  * { margin: 0; padding: 0; box-sizing: border-box; }
   body {
     font-family: 'Inter', sans-serif;
     background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
@@ -19,7 +17,6 @@
     display: flex;
     justify-content: center;
   }
-
   .container {
     width: 900px;
     background: white;
@@ -27,14 +24,12 @@
     padding: 40px;
     box-shadow: 0 10px 30px rgba(0,0,0,0.08);
   }
-
   h1 {
     font-size: 2.4em;
     font-weight: 700;
     text-align: center;
     margin-bottom: 6px;
   }
-
   h2.subheading {
     text-align: center;
     color: #555555;  /* Dark grey */
@@ -42,28 +37,23 @@
     font-size: 1em;  /* Smaller font */
     margin-bottom: 40px; /* Increased space */
   }
-
   hr {
     border: none;
     border-bottom: 2px solid #f1f3f4;
     margin-bottom: 30px;
   }
-
   .card {
     background: #f8f9fa;
     border-radius: 12px;
     padding: 30px 35px;
     margin-bottom: 40px;
   }
-
   .card h3 {
     color: #00D1FF;
     font-size: 1.5em;
     margin-bottom: 25px;
     font-weight: 600;
   }
-
-  /* Uniform width inputs */
   .form-group {
     margin-bottom: 18px;
   }
@@ -84,7 +74,13 @@
     border-color: #00D1FF;
     box-shadow: 0 0 0 3px rgba(0, 209, 255, 0.1);
   }
-
+  .error-msg {
+    color: #ea1f30;
+    font-weight: 600;
+    margin-top: 5px;
+    font-size: 0.9em;
+    display: none;
+  }
   table {
     width: 100%;
     border-collapse: collapse;
@@ -113,8 +109,6 @@
     border-radius: 6px;
     border: 1.5px solid #dbdfe7;
   }
-
-  /* Yes/No radio for modifying weights */
   .modify-question {
     font-weight: 600;
     margin-bottom: 10px;
@@ -127,16 +121,6 @@
     font-weight: normal;
     cursor: pointer;
   }
-
-  /* Error message */
-  .error-msg {
-    color: #ea1f30;
-    font-weight: 600;
-    margin-bottom: 20px;
-    display: none;
-  }
-
-  /* Submit button */
   button#submitBtn {
     background: linear-gradient(135deg, #00D1FF 0%, #0099cc 100%);
     color: white;
@@ -148,28 +132,34 @@
     cursor: pointer;
     box-shadow: 0 6px 15px rgba(0, 209, 255, 0.3);
     display: block;
-    margin: 0 auto;
+    margin: 40px auto 0;
   }
   button#submitBtn:disabled {
     background: #ccc;
     cursor: not-allowed;
     box-shadow: none;
   }
-
+  /* Result display */
+  #resultSection {
+    display: none;
+    text-align: center;
+    margin-top: 60px;
+  }
 </style>
 </head>
 <body>
-<div class="container">
+
+<div class="container" id="formContainer">
   <h1>Rygur Engine - Operations Diagnostic</h1>
   <h2 class="subheading">Set up the survey for your company's assessment.</h2>
   <hr>
 
-  <!-- Company Info Card -->
   <div class="card" id="companyInfoCard">
     <h3>Company Information</h3>
     <div class="form-group">
       <label for="companyName">Company Name *</label>
-      <input type="text" id="companyName" name="companyName" required>
+      <input type="text" id="companyName" name="companyName" required />
+      <p class="error-msg" id="emailError" style="display:none;">Please enter a valid email address.</p>
     </div>
     <div class="form-group">
       <label for="companyStage">Company Stage *</label>
@@ -182,16 +172,14 @@
     </div>
     <div class="form-group">
       <label for="respondents">Number of Respondents *</label>
-      <input type="number" id="respondents" name="respondents" min="1" required>
+      <input type="number" id="respondents" name="respondents" min="1" required />
     </div>
     <div class="form-group">
       <label for="submitterEmail">Submitter's Email *</label>
-      <input type="email" id="submitterEmail" name="submitterEmail" required>
-      <p id="emailError" style="color: #ea1f30; font-size: 0.9em; margin-top: 5px; display: none;">Please enter a valid email address.</p>
-   </div> 
+      <input type="email" id="submitterEmail" name="submitterEmail" required />
+    </div>
   </div>
 
-  <!-- Pillar Weights Card -->
   <div class="card" id="pillarWeightsCard">
     <h3>Pillar Weights</h3>
     <table aria-label="Default Pillar Weights by Stage">
@@ -216,7 +204,6 @@
       <label><input type="radio" name="modifyWeights" value="yes"> Yes</label>
     </div>
 
-    <!-- Editable weights table, initially hidden -->
     <table aria-label="Editable Pillar Weights" id="editWeightsTable" style="display:none; margin-top: 15px; border-collapse: collapse; width: 100%;">
       <thead>
         <tr>
@@ -270,82 +257,162 @@
 </div>
 
 <script>
-const companyFields = [
-  document.getElementById('companyName'),
-  document.getElementById('companyStage'),
-  document.getElementById('respondents'),
-  document.getElementById('submitterEmail')
-];
+  const modifyRadios = document.getElementsByName('modifyWeights');
+  const editWeightsTable = document.getElementById('editWeightsTable');
+  const weightInputs = document.querySelectorAll('.weight-input');
+  const weightsTotalDisplay = document.getElementById('weightsTotal');
+  const weightError = document.getElementById('weightError');
+  const submitBtn = document.getElementById('submitBtn');
 
-function isValidEmail(email) {
-  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
-}
+  const companyFields = [
+    document.getElementById('companyName'),
+    document.getElementById('companyStage'),
+    document.getElementById('respondents'),
+    document.getElementById('submitterEmail')
+  ];
 
-function validateCompanyInfo() {
-  let valid = true;
-  companyFields.forEach(field => {
-    if (!field.value.trim()) valid = false;
-  });
-  const emailField = document.getElementById('submitterEmail');
-  const emailError = document.getElementById('emailError');
-  if (!isValidEmail(emailField.value.trim())) {
-    emailError.style.display = 'block';
-    valid = false;
-  } else {
-    emailError.style.display = 'none';
+  function isValidEmail(email) {
+    const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return re.test(email);
   }
-  return valid;
-}
 
-function updateSubmitButtonState() {
-  const companyOk = validateCompanyInfo();
-  let weightsOk = true;
-  if (document.querySelector('input[name="modifyWeights"]:checked').value === 'yes') {
-    weightsOk = isWeightsValid(); // Implemented below
-  }
-  submitBtn.disabled = !(companyOk && weightsOk);
-}
+  function validateCompanyInfo() {
+    let valid = true;
+    const emailField = document.getElementById('submitterEmail');
+    const emailError = document.getElementById('emailError');
 
-// Override validateWeights to call updateSubmitButtonState
-function isWeightsValid() {
-  let total = 0;
-  weightInputs.forEach(input => {
-    const val = parseFloat(input.value);
-    if (!isNaN(val)) {
-      total += val;
+    companyFields.forEach(field => {
+      if (!field.value.trim()) valid = false;
+    });
+
+    if (!isValidEmail(emailField.value.trim())) {
+      emailError.style.display = 'block';
+      valid = false;
+    } else {
+      emailError.style.display = 'none';
     }
+
+    return valid;
+  }
+
+  function isWeightsValid() {
+    let total = 0;
+    weightInputs.forEach(input => {
+      const val = parseFloat(input.value);
+      if (!isNaN(val)) {
+        total += val;
+      }
+    });
+    weightsTotalDisplay.textContent = total.toFixed(1);
+    const ok = (total === 100);
+    weightError.style.display = ok ? 'none' : 'block';
+    return ok;
+  }
+
+  function validateWeights() {
+    isWeightsValid(); 
+    updateSubmitButtonState();
+  }
+
+  function updateUI() {
+    const selected = Array.from(modifyRadios).find(r => r.checked).value;
+    if(selected === 'yes') {
+      editWeightsTable.style.display = 'table';
+      validateWeights();
+    } else {
+      editWeightsTable.style.display = 'none';
+      weightError.style.display = 'none';
+      submitBtn.disabled = false;
+    }
+  }
+
+  function updateSubmitButtonState() {
+    const companyOk = validateCompanyInfo();
+    let weightsOk = true;
+    if (document.querySelector('input[name="modifyWeights"]:checked').value === 'yes') {
+      weightsOk = isWeightsValid();
+    }
+    submitBtn.disabled = !(companyOk && weightsOk);
+  }
+
+  modifyRadios.forEach(radio => {
+    radio.addEventListener('change', () => {
+      updateUI();
+      updateSubmitButtonState();
+    });
   });
-  weightsTotalDisplay.textContent = total.toFixed(1);
-  const ok = (total === 100);
-  weightError.style.display = ok ? 'none' : 'block';
-  return ok;
-}
 
-// updateWeights remains the same but calls updateSubmitButtonState
-function validateWeights() {
-  isWeightsValid(); 
-  updateSubmitButtonState();
-}
+  weightInputs.forEach(input => {
+    input.addEventListener('input', validateWeights);
+  });
 
-// Listen for company fields change
-companyFields.forEach(field => {
-  field.addEventListener('input', updateSubmitButtonState);
-});
+  companyFields.forEach(field => {
+    field.addEventListener('input', updateSubmitButtonState);
+  });
 
-// Modify weights radio change should call updateSubmitButtonState
-modifyRadios.forEach(radio => {
-  radio.addEventListener('change', () => {
+  function generateCode() {
+    const cname = document.getElementById('companyName').value.trim();
+    const prefix = (cname.match(/[a-zA-Z]/g) || ['X','X','X']).slice(0,3).join('').toUpperCase();
+    const now = new Date();
+    const pad = n => n.toString().padStart(2,'0');
+    return `${prefix}${now.getFullYear()}${pad(now.getMonth()+1)}${pad(now.getDate())}` +
+           `-${pad(now.getHours())}${pad(now.getMinutes())}${pad(now.getSeconds())}`;
+  }
+
+  submitBtn.addEventListener('click', () => {
+    const codeField = document.getElementById('uniqueCode');
+    codeField.value = generateCode();
+
+    const data = {
+      companyName: document.getElementById('companyName').value,
+      companyStage: document.getElementById('companyStage').value,
+      respondents: document.getElementById('respondents').value,
+      submitterEmail: document.getElementById('submitterEmail').value,
+      uniqueCode: codeField.value,
+      weights: {}
+    };
+
+    if(document.querySelector('input[name="modifyWeights"]:checked').value === 'yes') {
+      weightInputs.forEach(input => {
+        data.weights[input.id.replace('input', '')] = input.value;
+      });
+    } else {
+      // Provide defaults if user didn't modify (mirror table defaults)
+      data.weights = {
+        Leadership: "15",
+        Performance: "15",
+        Structure: "15",
+        Process: "20",
+        Technology: "20",
+        Risk: "15"
+      };
+    }
+
+    fetch('https://str4t.app.n8n.cloud/webhook-test/5e507fd0-4e9d-42ff-906f-dd2343d574f0', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(data)
+    })
+    .then(res => res.json())
+    .then(res => {
+      // Display success message and survey link page
+      document.getElementById('formContainer').innerHTML = `
+        <h1>We have generated your unique survey link:</h1>
+        <p><a href="https://example.com/survey/${codeField.value}" target="_blank" rel="noopener noreferrer">Operations Diagnostic</a></p>
+        <p>Please share this with your team for responses. Note that we expect ${data.respondents} response(s) before we generate your report.</p>
+        <p>We have sent you an email with this link to forward to your survey respondents.</p>
+      `;
+    })
+    .catch(err => {
+      alert('There was an error submitting the survey. Please try again.');
+      console.error(err);
+    });
+  });
+
+  window.addEventListener('DOMContentLoaded', () => {
     updateUI();
     updateSubmitButtonState();
   });
-});
-
-// Call updateSubmitButtonState on load
-window.addEventListener('DOMContentLoaded', () => {
-  updateUI();
-  updateSubmitButtonState();
-});
-
 </script>
 
 </body>
