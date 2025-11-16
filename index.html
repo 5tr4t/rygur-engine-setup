@@ -188,6 +188,11 @@
       <label for="submitterEmail">Submitter's Email *</label>
       <input type="email" id="submitterEmail" name="submitterEmail" required>
     </div>
+    <div class="form-group">
+      <label for="submitterEmail">Submitter's Email *</label>
+      <input type="email" id="submitterEmail" name="submitterEmail" required>
+      <p id="emailError" style="color: #ea1f30; font-size: 0.9em; margin-top: 5px; display: none;">Please enter a valid email address.</p>
+   </div> 
   </div>
 
   <!-- Pillar Weights Card -->
@@ -281,13 +286,19 @@ function isValidEmail(email) {
 }
 
 function validateCompanyInfo() {
-  return companyFields.every(field => {
-    if (!field.value.trim()) return false;
-    if(field.id === 'submitterEmail') {
-      return isValidEmail(field.value.trim());
-    }
-    return true;
+  let valid = true;
+  companyFields.forEach(field => {
+    if (!field.value.trim()) valid = false;
   });
+  const emailField = document.getElementById('submitterEmail');
+  const emailError = document.getElementById('emailError');
+  if (!isValidEmail(emailField.value.trim())) {
+    emailError.style.display = 'block';
+    valid = false;
+  } else {
+    emailError.style.display = 'none';
+  }
+  return valid;
 }
 
 function updateSubmitButtonState() {
