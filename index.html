@@ -397,11 +397,45 @@
     .then(res => {
       // Display success message and survey link page
       document.getElementById('formContainer').innerHTML = `
-        <h1>We have generated your unique survey link:</h1>
-        <p><a href="https://example.com/survey/${codeField.value}" target="_blank" rel="noopener noreferrer">Operations Diagnostic</a></p>
-        <p>Please share this with your team for responses. Note that we expect ${data.respondents} response(s) before we generate your report.</p>
-        <p>We have sent you an email with this link to forward to your survey respondents.</p>
-      `;
+          <div style="
+            background: #f8f9fa;
+            border-radius: 16px;
+            max-width: 700px;
+            margin: 50px auto 0 auto;
+            padding: 48px 38px 38px 38px;
+            box-shadow: 0 6px 30px rgba(0,0,0,0.08);
+            text-align: center;">
+            <h1 style="font-size:2.2em; font-weight:700; color:#222; margin-bottom:10px;">
+              We have generated your unique survey link!
+            </h1>
+            <div style="margin-bottom:24px;">
+              <a
+                href="https://5tr4t.github.io/rygur-engine/?companyCode=${codeField.value}"
+                target="_blank"
+                style="
+                  display:inline-block;
+                  background:linear-gradient(135deg, #00D1FF 0%, #0099cc 100%);
+                  color:white;
+                  font-size:1.1em;
+                  font-weight:700;
+                  padding:14px 38px;
+                  border-radius:10px;
+                  text-decoration:none;
+                  margin-bottom:10px;
+                  box-shadow:0 4px 16px rgba(0,209,255,0.12);
+                ">
+                Operations Diagnostic Survey Link
+              </a>
+            </div>
+            <div style="font-size:1.12em; color:#444; margin-bottom:18px;">
+              Please share this with your team for responses.<br>
+              Note that we expect <strong>${data.respondents}</strong> response(s) before we generate your report.
+            </div>
+            <div style="font-size:1.09em; color:#555;">
+              We have sent you an email with this survey link to forward to your survey respondents.
+            </div>
+            </div>
+        `;
     })
     .catch(err => {
       alert('There was an error submitting the survey. Please try again.');
