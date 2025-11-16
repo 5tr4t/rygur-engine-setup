@@ -269,76 +269,76 @@
 </div>
 
 <script>
-  const modifyRadios = document.getElementsByName('modifyWeights');
-  const editWeightsTable = document.getElementById('editWeightsTable');
-  const weightInputs = document.querySelectorAll('.weight-input');
-  const weightsTotalDisplay = document.getElementById('weightsTotal');
-  const weightError = document.getElementById('weightError');
-  const submitBtn = document.getElementById('submitBtn');
+const companyFields = [
+  document.getElementById('companyName'),
+  document.getElementById('companyStage'),
+  document.getElementById('respondents'),
+  document.getElementById('submitterEmail')
+];
 
-  function updateUI() {
-    const selected = Array.from(modifyRadios).find(r => r.checked).value;
-    if(selected === 'yes') {
-      editWeightsTable.style.display = 'table';
-      validateWeights();
-    } else {
-      editWeightsTable.style.display = 'none';
-      weightError.style.display = 'none';
-      submitBtn.disabled = false;
+function isValidEmail(email) {
+  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+}
+
+function validateCompanyInfo() {
+  return companyFields.every(field => {
+    if (!field.value.trim()) return false;
+    if(field.id === 'submitterEmail') {
+      return isValidEmail(field.value.trim());
     }
-  }
-
-  // Show/hide editable weights table based on radio
-  modifyRadios.forEach(radio => {
-    radio.addEventListener('change', updateUI);
+    return true;
   });
+}
 
-  // Calculate and validate total weights
-  function validateWeights() {
-    let total = 0;
-    weightInputs.forEach(input => {
-      const val = parseFloat(input.value);
-      if (!isNaN(val)) {
-        total += val;
-      }
-    });
-    weightsTotalDisplay.textContent = total.toFixed(1);
-    if (total !== 100) {
-      weightError.style.display = 'block';
-      submitBtn.disabled = true;
-    } else {
-      weightError.style.display = 'none';
-      submitBtn.disabled = false;
-    }
+function updateSubmitButtonState() {
+  const companyOk = validateCompanyInfo();
+  let weightsOk = true;
+  if (document.querySelector('input[name="modifyWeights"]:checked').value === 'yes') {
+    weightsOk = isWeightsValid(); // Implemented below
   }
+  submitBtn.disabled = !(companyOk && weightsOk);
+}
 
+// Override validateWeights to call updateSubmitButtonState
+function isWeightsValid() {
+  let total = 0;
   weightInputs.forEach(input => {
-    input.addEventListener('input', validateWeights);
+    const val = parseFloat(input.value);
+    if (!isNaN(val)) {
+      total += val;
+    }
   });
+  weightsTotalDisplay.textContent = total.toFixed(1);
+  const ok = (total === 100);
+  weightError.style.display = ok ? 'none' : 'block';
+  return ok;
+}
 
-  // Unique code generation on submit
-  function generateCode() {
-    const cname = document.getElementById('companyName').value.trim();
-    const prefix = (cname.match(/[a-zA-Z]/g) || ['X','X','X']).slice(0,3).join('').toUpperCase();
-    const now = new Date();
-    const pad = n => n.toString().padStart(2,'0');
-    return `${prefix}${now.getFullYear()}${pad(now.getMonth()+1)}${pad(now.getDate())}` +
-           `-${pad(now.getHours())}${pad(now.getMinutes())}${pad(now.getSeconds())}`;
-  }
+// updateWeights remains the same but calls updateSubmitButtonState
+function validateWeights() {
+  isWeightsValid(); 
+  updateSubmitButtonState();
+}
 
-  submitBtn.addEventListener('click', () => {
-    const codeField = document.getElementById('uniqueCode');
-    codeField.value = generateCode();
-    alert(`Survey submitted with code ${codeField.value}`);
-    // Implement form validation and sending logic here...
+// Listen for company fields change
+companyFields.forEach(field => {
+  field.addEventListener('input', updateSubmitButtonState);
+});
 
-    // Prevent default submit if form exists or send via Ajax/fetch POST
-  });
-
-  // Initialization
-  window.addEventListener('DOMContentLoaded', () => {
+// Modify weights radio change should call updateSubmitButtonState
+modifyRadios.forEach(radio => {
+  radio.addEventListener('change', () => {
     updateUI();
+    updateSubmitButtonState();
   });
+});
+
+// Call updateSubmitButtonState on load
+window.addEventListener('DOMContentLoaded', () => {
+  updateUI();
+  updateSubmitButtonState();
+});
+
 </script>
 
 </body>
