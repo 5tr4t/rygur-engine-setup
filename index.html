@@ -372,21 +372,27 @@
       weights: {}
     };
 
+    const stageDefaults = {
+      startup: {
+        Leadership: 20, Performance: 10, Structure: 10, Process: 10, Technology: 40, Risk: 10
+      },
+      scaleup: {
+        Leadership: 15, Performance: 15, Structure: 15, Process: 20, Technology: 20, Risk: 15
+      },
+      mature: {
+        Leadership: 10, Performance: 20, Structure: 20, Process: 20, Technology: 10, Risk: 20
+      }
+    };
+
     if(document.querySelector('input[name="modifyWeights"]:checked').value === 'yes') {
       weightInputs.forEach(input => {
         data.weights[input.id.replace('input', '')] = input.value;
       });
     } else {
-      // Provide defaults if user didn't modify (mirror table defaults)
-      data.weights = {
-        Leadership: "15",
-        Performance: "15",
-        Structure: "15",
-        Process: "20",
-        Technology: "20",
-        Risk: "15"
-      };
+      const selectedStage = document.getElementById('companyStage').value;
+      data.weights = stageDefaults[selectedStage] || stageDefaults['startup'];
     }
+
 
     fetch('https://str4t.app.n8n.cloud/webhook-test/6c4856d9-50b2-4adf-b1f7-f4ce35752ebc', {
       method: 'POST',
