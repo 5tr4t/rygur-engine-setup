@@ -1,1 +1,261 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Operations Diagnostic Survey</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+<style>
+  * {
+    margin: 0; padding: 0; box-sizing: border-box;
+  }
+
+  body {
+    font-family: 'Inter', sans-serif;
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+    min-height: 100vh;
+    color: #333;
+    line-height: 1.6;
+    padding: 20px;
+  }
+
+  .survey-container {
+    max-width: 1000px;
+    margin: auto;
+    background: #fff;
+    padding: 30px;
+    border-radius: 16px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+  }
+
+  h1, h2 {
+    text-align: center;
+    margin-bottom: 20px;
+  }
+
+  /* Company info questions styling */
+  .company-info {
+    margin-bottom: 40px;
+  }
+
+  label {
+    display: block;
+    margin-bottom: 6px;
+    font-weight: 500;
+  }
+  input[type="text"], input[type="email"], select {
+    width: 100%;
+    padding: 10px 12px;
+    border: 2px solid #dedede;
+    border-radius: 6px;
+    margin-bottom: 15px;
+    font-size: 14px;
+  }
+
+  /* Pillar table styles */
+  table {
+    width: 100%;
+    border-collapse: collapse; 
+    margin-bottom: 20px;
+  }
+  th, td {
+    border: 1px solid #ccc;
+    padding: 10px;
+    text-align: center;
+  }
+  th {
+    background: #f1f3f4;
+  }
+  input[type="number"] {
+    width: 80px;
+    padding: 6px;
+    text-align: center;
+    border-radius: 4px;
+  }
+
+  /* Pillar questions styles */
+  .pillars {
+    margin-top: 30px;
+  }
+  .pillar-question {
+    margin-bottom: 30px;
+    padding: 15px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+  }
+  .pillar-question h3 {
+    margin-bottom: 12px;
+    color: #007bff;
+  }
+
+  /* Question and scale grid styles */
+  .question {
+    margin-bottom: 15px;
+  }
+  .question-title {
+    margin-bottom: 6px;
+    font-weight: 600;
+  }
+  .scale-row {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 4px;
+  }
+  .scale-cell {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  .scale-cell span {
+    font-size: 0.9em;
+    margin-bottom: 4px;
+  }
+  input[type="radio"] {
+    display: none;
+  }
+  label.radio-label {
+    display: block;
+    width: 40px; height: 40px;
+    border-radius: 50%;
+    border: 2px solid #ddd;
+    background: #fff;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+  }
+  input[type="radio"]:checked + label.radio-label {
+    border-color: #00D1FF;
+    background: #00D1FF;
+    color: white;
+  }
+  label.radio-label:hover {
+    border-color: #007bff;
+  }
+
+  /* Submit button styles */
+  .submit-section {
+    text-align: center;
+    margin-top: 40px;
+  }
+  button[type="submit"] {
+    background: linear-gradient(135deg, #00D1FF, #0099cc);
+    padding: 14px 30px;
+    border: none;
+    border-radius: 8px;
+    color: #fff;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    box-shadow: 0 4px 12px rgba(0, 209, 255, 0.3);
+    transition: all 0.2s ease;
+  }
+  button[type="submit"]:hover {
+    box-shadow: 0 6px 20px rgba(0, 209, 255, 0.4);
+  }
+</style>
+</head>
+<body>
+<div class="survey-container">
+
+<h1>Operations Diagnostic Survey</h1>
+
+<!-- Company info questions -->
+<div class="company-info">
+  <h2>Company Information</h2>
+  <label for="companyName">Company Name *</label>
+  <input type="text" id="companyName" required />
+  <label for="companyStage">Company Stage *</label>
+  <select id="companyStage" required>
+    <option value="">Select Stage</option>
+    <option value="startup">Startup</option>
+    <option value="scaleup">Scale-up</option>
+    <option value="mature">Mature</option>
+  </select>
+  <label for="respondents">Number of Respondents *</label>
+  <input type="number" id="respondents" required />
+  <label for="submitterEmail">Your Email *</label>
+  <input type="email" id="submitterEmail" required />
+</div>
+
+<!-- Default weights info table -->
+<h2>Default Weights Per Stage</h2>
+<table>
+<tr><th>Pillar</th><th>Start-up</th><th>Scale-up</th><th>Mature</th></tr>
+<tr><td>Leadership & Culture</td><td>20%</td><td>15%</td><td>10%</td></tr>
+<tr><td>Performance & Governance</td><td>10%</td><td>15%</td><td>20%</td></tr>
+<tr><td>Structure, Roles & Responsibilities</td><td>10%</td><td>15%</td><td>20%</tr>
+<tr><td>Process Discipline</td><td>10%</td><td>20%</td><td>20%</td></tr>
+<tr><td>Technology & Enablement</td><td>40%</td><td>20%</td><td>10%</td></tr>
+<tr><td>Risk & Resilience</td><td>10%</td><td>15%</td><td>20%</td></tr>
+</table>
+
+<!-- User confirmation of default weights -->
+<h2>Does this look correct?</h2>
+<div style="text-align: center;">
+  <button type="button" id="confirmDefault">Yes, I accept</button>
+  <button type="button" id="editWeights">No, I want to adjust</button>
+</div>
+
+<!-- Pillar questions for input if user chooses "adjust" -->
+<div id="pillarInputs" style="display:none;">
+  <h2>Adjust Your Weights</h2>
+  <!-- Each pillar with input for preferred weight -->
+  <div class="pillar-question">
+    <h3>Leadership & Culture</h3>
+    <div class="scale-row">
+      <div class="scale-cell"><span>20%</span></div>
+      <div class="scale-cell"><span>15%</span></div>
+      <div class="scale-cell"><span>10%</span></div>
+      <div class="scale-cell"><span>Your Weight</span></div>
+    </div>
+    <input type="number" id="weightLeadership" min="0" max="100" placeholder="Your weight" />
+  </div>
+  <!-- Repeat for other pillars similarly -->
+  <!-- ... -->
+  <!-- Submit button -->
+  <div class="submit-section">
+    <button type="submit" id="finalSubmit">Submit</button>
+  </div>
+</div>
+
+<!-- Hidden input for unique code -->
+<input type="hidden" id="uniqueCode" name="uniqueCode" />
+
+<script>
+// Generate unique code on submit
+function generateCode() {
+  const companyName = document.getElementById('companyName').value.trim().substring(0,3).toUpperCase() || 'XXX';
+  const now = new Date();
+  const year = now.getFullYear();
+  const month = (now.getMonth() + 1).toString().padStart(2,'0');
+  const day = now.getDate().toString().padStart(2,'0');
+  const hour = now.getHours().toString().padStart(2,'0');
+  const min = now.getMinutes().toString().padStart(2,'0');
+  const sec = now.getSeconds().toString().padStart(2,'0');
+  return `${companyName}${year}${month}${day}-${hour}${min}${sec}`;
+}
+
+// Button actions
+document.getElementById('confirmDefault').addEventListener('click', () => {
+  alert('Default weights accepted.');
+  // proceed with submission...
+});
+
+document.getElementById('editWeights').addEventListener('click', () => {
+  document.getElementById('pillarInputs').style.display = 'block';
+});
+
+document.getElementById('finalSubmit').addEventListener('click', () => {
+  const code = generateCode();
+  document.getElementById('uniqueCode').value = code;
+  alert(`Submitting with code: ${code}`);
+  // You can add form validation and POST here
+});
+</script>
+
+</div>
+</body>
+</html>
 
