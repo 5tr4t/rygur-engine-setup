@@ -37,9 +37,10 @@
 
   h2.subheading {
     text-align: center;
-    color: #00D1FF;
+    color: #555555;  /* Dark grey */
     font-weight: 600;
-    margin-bottom: 18px;
+    font-size: 1em;  /* Smaller font */
+    margin-bottom: 40px; /* Increased space */
   }
 
   hr {
@@ -48,17 +49,6 @@
     margin-bottom: 30px;
   }
 
- .header p {
-  text-align: center; 
-  font-size: 1.1em;
-   color: #666;
-   line-height: 1.5;
-   max-width: 600px;
-   margin: 0 auto;
-   margin-bottom: 18px;
-  }
-
- 
   .card {
     background: #f8f9fa;
     border-radius: 12px;
@@ -171,7 +161,7 @@
 <body>
 <div class="container">
   <h1>Rygur Engine - Operations Diagnostic</h1>
-  <p>Set up the survey for your company's assessment.</p>
+  <h2 class="subheading">Set up the survey for your company's assessment.</h2>
   <hr>
 
   <!-- Company Info Card -->
@@ -269,7 +259,7 @@
         </tr>
       </tbody>
     </table>
-    <div id="weightError" style="color:#ea1f30; font-weight: 600; margin-bottom: 20px; display:none;">Weights should add to 100%</div>
+    <div id="weightError" class="error-msg">Weights should add to 100%</div>
   </div>
 
   <div style="text-align:center; margin-top: 40px;">
@@ -286,17 +276,21 @@
   const weightError = document.getElementById('weightError');
   const submitBtn = document.getElementById('submitBtn');
 
+  function updateUI() {
+    const selected = Array.from(modifyRadios).find(r => r.checked).value;
+    if(selected === 'yes') {
+      editWeightsTable.style.display = 'table';
+      validateWeights();
+    } else {
+      editWeightsTable.style.display = 'none';
+      weightError.style.display = 'none';
+      submitBtn.disabled = false;
+    }
+  }
+
   // Show/hide editable weights table based on radio
   modifyRadios.forEach(radio => {
-    radio.addEventListener('change', () => {
-      if (radio.value === 'yes' && radio.checked) {
-        editWeightsTable.style.display = 'table';
-      } else {
-        editWeightsTable.style.display = 'none';
-        weightError.style.display = 'none';
-        submitBtn.disabled = false;
-      }
-    });
+    radio.addEventListener('change', updateUI);
   });
 
   // Calculate and validate total weights
@@ -342,9 +336,10 @@
   });
 
   // Initialization
-  validateWeights();
+  window.addEventListener('DOMContentLoaded', () => {
+    updateUI();
+  });
 </script>
 
 </body>
 </html>
-
