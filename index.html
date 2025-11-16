@@ -2,8 +2,8 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Operations Diagnostic Survey</title>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Rygur Engine - Operations Diagnostic</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
 <style>
   * {
@@ -15,247 +15,325 @@
     background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
     min-height: 100vh;
     color: #333;
-    line-height: 1.6;
     padding: 20px;
+    display: flex;
+    justify-content: center;
   }
 
-  .survey-container {
-    max-width: 1000px;
-    margin: auto;
-    background: #fff;
-    padding: 30px;
+  .container {
+    width: 900px;
+    background: white;
     border-radius: 16px;
+    padding: 40px;
     box-shadow: 0 10px 30px rgba(0,0,0,0.08);
   }
 
-  h1, h2 {
+  h1 {
+    font-size: 2.8em;
+    font-weight: 700;
     text-align: center;
-    margin-bottom: 20px;
+    margin-bottom: 6px;
   }
 
-  /* Company info questions styling */
-  .company-info {
+  h2.subheading {
+    text-align: center;
+    color: #00D1FF;
+    font-weight: 600;
+    margin-bottom: 18px;
+  }
+
+  hr {
+    border: none;
+    border-bottom: 2px solid #f1f3f4;
+    margin-bottom: 30px;
+  }
+
+  .card {
+    background: #f8f9fa;
+    border-radius: 12px;
+    padding: 30px 35px;
     margin-bottom: 40px;
   }
 
-  label {
-    display: block;
-    margin-bottom: 6px;
-    font-weight: 500;
-  }
-  input[type="text"], input[type="email"], select {
-    width: 100%;
-    padding: 10px 12px;
-    border: 2px solid #dedede;
-    border-radius: 6px;
-    margin-bottom: 15px;
-    font-size: 14px;
+  .card h3 {
+    color: #00D1FF;
+    font-size: 1.5em;
+    margin-bottom: 25px;
+    font-weight: 600;
   }
 
-  /* Pillar table styles */
+  /* Uniform width inputs */
+  .form-group {
+    margin-bottom: 18px;
+  }
+  label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 600;
+  }
+  input[type="text"], input[type="email"], select, input[type="number"] {
+    width: 100%;
+    padding: 12px 14px;
+    font-size: 1em;
+    border-radius: 8px;
+    border: 2px solid #dbdfe7;
+  }
+  input[type="email"]:focus, input[type="text"]:focus, select:focus, input[type="number"]:focus {
+    outline: none;
+    border-color: #00D1FF;
+    box-shadow: 0 0 0 3px rgba(0, 209, 255, 0.1);
+  }
+
   table {
     width: 100%;
-    border-collapse: collapse; 
-    margin-bottom: 20px;
+    border-collapse: collapse;
+    margin-bottom: 24px;
+    font-size: 14px;
+    color: #555;
   }
   th, td {
     border: 1px solid #ccc;
-    padding: 10px;
+    padding: 10px 8px;
     text-align: center;
+    vertical-align: middle;
   }
   th {
-    background: #f1f3f4;
+    background: #e9f5fc;
+    font-weight: 600;
   }
-  input[type="number"] {
+  td:first-child {
+    text-align: left;
+    font-weight: 600;
+  }
+  input.weight-input {
     width: 80px;
     padding: 6px;
     text-align: center;
-    border-radius: 4px;
+    border-radius: 6px;
+    border: 1.5px solid #dbdfe7;
   }
 
-  /* Pillar questions styles */
-  .pillars {
-    margin-top: 30px;
-  }
-  .pillar-question {
-    margin-bottom: 30px;
-    padding: 15px;
-    border: 1px solid #ddd;
-    border-radius: 8px;
-  }
-  .pillar-question h3 {
-    margin-bottom: 12px;
-    color: #007bff;
-  }
-
-  /* Question and scale grid styles */
-  .question {
-    margin-bottom: 15px;
-  }
-  .question-title {
-    margin-bottom: 6px;
+  /* Yes/No radio for modifying weights */
+  .modify-question {
     font-weight: 600;
+    margin-bottom: 10px;
   }
-  .scale-row {
-    display: grid;
-    grid-template-columns: repeat(5, 1fr);
-    gap: 4px;
+  .radio-group {
+    margin-bottom: 25px;
   }
-  .scale-cell {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
+  .radio-group label {
+    margin-right: 25px;
+    font-weight: normal;
+    cursor: pointer;
   }
-  .scale-cell span {
-    font-size: 0.9em;
-    margin-bottom: 4px;
-  }
-  input[type="radio"] {
+
+  /* Error message */
+  .error-msg {
+    color: #ea1f30;
+    font-weight: 600;
+    margin-bottom: 20px;
     display: none;
   }
-  label.radio-label {
-    display: block;
-    width: 40px; height: 40px;
-    border-radius: 50%;
-    border: 2px solid #ddd;
-    background: #fff;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: all 0.2s ease;
-  }
-  input[type="radio"]:checked + label.radio-label {
-    border-color: #00D1FF;
-    background: #00D1FF;
+
+  /* Submit button */
+  button#submitBtn {
+    background: linear-gradient(135deg, #00D1FF 0%, #0099cc 100%);
     color: white;
+    padding: 16px 50px;
+    font-weight: 700;
+    font-size: 18px;
+    border-radius: 12px;
+    border: none;
+    cursor: pointer;
+    box-shadow: 0 6px 15px rgba(0, 209, 255, 0.3);
+    display: block;
+    margin: 0 auto;
   }
-  label.radio-label:hover {
-    border-color: #007bff;
+  button#submitBtn:disabled {
+    background: #ccc;
+    cursor: not-allowed;
+    box-shadow: none;
   }
 
-  /* Submit button styles */
-  .submit-section {
-    text-align: center;
-    margin-top: 40px;
-  }
-  button[type="submit"] {
-    background: linear-gradient(135deg, #00D1FF, #0099cc);
-    padding: 14px 30px;
-    border: none;
-    border-radius: 8px;
-    color: #fff;
-    font-size: 16px;
-    font-weight: 600;
-    cursor: pointer;
-    box-shadow: 0 4px 12px rgba(0, 209, 255, 0.3);
-    transition: all 0.2s ease;
-  }
-  button[type="submit"]:hover {
-    box-shadow: 0 6px 20px rgba(0, 209, 255, 0.4);
-  }
 </style>
 </head>
 <body>
-<div class="survey-container">
+<div class="container">
+  <h1>Rygur Engine - Operations Diagnostic</h1>
+  <h2 class="subheading">Set up the survey for your company's assessment.</h2>
+  <hr>
 
-<h1>Operations Diagnostic Survey</h1>
-
-<!-- Company info questions -->
-<div class="company-info">
-  <h2>Company Information</h2>
-  <label for="companyName">Company Name *</label>
-  <input type="text" id="companyName" required />
-  <label for="companyStage">Company Stage *</label>
-  <select id="companyStage" required>
-    <option value="">Select Stage</option>
-    <option value="startup">Startup</option>
-    <option value="scaleup">Scale-up</option>
-    <option value="mature">Mature</option>
-  </select>
-  <label for="respondents">Number of Respondents *</label>
-  <input type="number" id="respondents" required />
-  <label for="submitterEmail">Your Email *</label>
-  <input type="email" id="submitterEmail" required />
-</div>
-
-<!-- Default weights info table -->
-<h2>Default Weights Per Stage</h2>
-<table>
-<tr><th>Pillar</th><th>Start-up</th><th>Scale-up</th><th>Mature</th></tr>
-<tr><td>Leadership & Culture</td><td>20%</td><td>15%</td><td>10%</td></tr>
-<tr><td>Performance & Governance</td><td>10%</td><td>15%</td><td>20%</td></tr>
-<tr><td>Structure, Roles & Responsibilities</td><td>10%</td><td>15%</td><td>20%</tr>
-<tr><td>Process Discipline</td><td>10%</td><td>20%</td><td>20%</td></tr>
-<tr><td>Technology & Enablement</td><td>40%</td><td>20%</td><td>10%</td></tr>
-<tr><td>Risk & Resilience</td><td>10%</td><td>15%</td><td>20%</td></tr>
-</table>
-
-<!-- User confirmation of default weights -->
-<h2>Does this look correct?</h2>
-<div style="text-align: center;">
-  <button type="button" id="confirmDefault">Yes, I accept</button>
-  <button type="button" id="editWeights">No, I want to adjust</button>
-</div>
-
-<!-- Pillar questions for input if user chooses "adjust" -->
-<div id="pillarInputs" style="display:none;">
-  <h2>Adjust Your Weights</h2>
-  <!-- Each pillar with input for preferred weight -->
-  <div class="pillar-question">
-    <h3>Leadership & Culture</h3>
-    <div class="scale-row">
-      <div class="scale-cell"><span>20%</span></div>
-      <div class="scale-cell"><span>15%</span></div>
-      <div class="scale-cell"><span>10%</span></div>
-      <div class="scale-cell"><span>Your Weight</span></div>
+  <!-- Company Info Card -->
+  <div class="card" id="companyInfoCard">
+    <h3>Company Information</h3>
+    <div class="form-group">
+      <label for="companyName">Company Name *</label>
+      <input type="text" id="companyName" name="companyName" required>
     </div>
-    <input type="number" id="weightLeadership" min="0" max="100" placeholder="Your weight" />
+    <div class="form-group">
+      <label for="companyStage">Company Stage *</label>
+      <select id="companyStage" name="companyStage" required>
+        <option value="">Select Stage</option>
+        <option value="startup">Startup</option>
+        <option value="scaleup">Scale-up</option>
+        <option value="mature">Mature</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label for="respondents">Number of Respondents *</label>
+      <input type="number" id="respondents" name="respondents" min="1" required>
+    </div>
+    <div class="form-group">
+      <label for="submitterEmail">Submitter's Email *</label>
+      <input type="email" id="submitterEmail" name="submitterEmail" required>
+    </div>
   </div>
-  <!-- Repeat for other pillars similarly -->
-  <!-- ... -->
-  <!-- Submit button -->
-  <div class="submit-section">
-    <button type="submit" id="finalSubmit">Submit</button>
+
+  <!-- Pillar Weights Card -->
+  <div class="card" id="pillarWeightsCard">
+    <h3>Pillar Weights</h3>
+    <table aria-label="Default Pillar Weights by Stage">
+      <thead>
+        <tr>
+          <th>Pillar</th><th>Start-up (prove + survive)</th><th>Scale-up (stabilise + grow)</th><th>Mature (optimise + sustain)</th><th>Rationale</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td>Leadership & Culture</td><td>20%</td><td>15%</td><td>10%</td><td>Early on, leadership clarity, vision, and culture are everything. As systems mature, leadership matters more for alignment than survival.</td></tr>
+        <tr><td>Performance & Governance</td><td>10%</td><td>15%</td><td>20%</td><td>In start-ups, formal governance slows speed. In scale-up, governance brings discipline. By mature stage, it’s the backbone of control and accountability.</td></tr>
+        <tr><td>Structure, Roles & Responsibilities</td><td>10%</td><td>15%</td><td>20%</td><td>Start-ups rely on generalists; structure emerges later. In maturity, clear roles and succession planning become critical for resilience.</td></tr>
+        <tr><td>Process Discipline</td><td>10%</td><td>20%</td><td>20%</td><td>At the beginning, agility &gt; process. As you scale, repeatability and optimisation determine efficiency and margin.</td></tr>
+        <tr><td>Technology & Enablement</td><td>40%</td><td>20%</td><td>10%</td><td>Start-ups depend heavily on enabling tech to punch above their weight. As they grow, tech becomes table stakes, not differentiator.</td></tr>
+        <tr><td>Risk & Resilience</td><td>10%</td><td>15%</td><td>20%</td><td>Low formal risk management early on; it ramps up with customer/regulatory exposure. Mature firms rely on strong resilience and controls.</td></tr>
+      </tbody>
+    </table>
+
+    <div class="modify-question">Would you like to modify these weights for your organisation?</div>
+    <div class="radio-group">
+      <label><input type="radio" name="modifyWeights" value="no" checked> No</label>
+      <label><input type="radio" name="modifyWeights" value="yes"> Yes</label>
+    </div>
+
+    <!-- Editable weights table, initially hidden -->
+    <table aria-label="Editable Pillar Weights" id="editWeightsTable" style="display:none; margin-top: 15px; border-collapse: collapse; width: 100%;">
+      <thead>
+        <tr>
+          <th>Pillar</th><th>Start-up (prove + survive)</th><th>Scale-up (stabilise + grow)</th><th>Mature (optimise + sustain)</th><th>Preferred Weight (%) *</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Leadership & Culture</td>
+          <td>20%</td><td>15%</td><td>10%</td>
+          <td><input type="number" class="weight-input" id="inputLeadership" min="0" max="100" required /></td>
+        </tr>
+        <tr>
+          <td>Performance & Governance</td>
+          <td>10%</td><td>15%</td><td>20%</td>
+          <td><input type="number" class="weight-input" id="inputPerformance" min="0" max="100" required /></td>
+        </tr>
+        <tr>
+          <td>Structure, Roles & Responsibilities</td>
+          <td>10%</td><td>15%</td><td>20%</td>
+          <td><input type="number" class="weight-input" id="inputStructure" min="0" max="100" required /></td>
+        </tr>
+        <tr>
+          <td>Process Discipline</td>
+          <td>10%</td><td>20%</td><td>20%</td>
+          <td><input type="number" class="weight-input" id="inputProcess" min="0" max="100" required /></td>
+        </tr>
+        <tr>
+          <td>Technology & Enablement</td>
+          <td>40%</td><td>20%</td><td>10%</td>
+          <td><input type="number" class="weight-input" id="inputTechnology" min="0" max="100" required /></td>
+        </tr>
+        <tr>
+          <td>Risk & Resilience</td>
+          <td>10%</td><td>15%</td><td>20%</td>
+          <td><input type="number" class="weight-input" id="inputRisk" min="0" max="100" required /></td>
+        </tr>
+        <tr>
+          <td colspan="4" style="text-align:right; font-weight: bold;">Total:</td>
+          <td id="weightsTotal">0</td>
+        </tr>
+      </tbody>
+    </table>
+    <div id="weightError" style="color:#ea1f30; font-weight: 600; margin-bottom: 20px; display:none;">Weights should add to 100%</div>
+  </div>
+
+  <div style="text-align:center; margin-top: 40px;">
+    <input type="hidden" id="uniqueCode" name="uniqueCode" />
+    <button id="submitBtn" disabled>Submit Survey</button>
   </div>
 </div>
-
-<!-- Hidden input for unique code -->
-<input type="hidden" id="uniqueCode" name="uniqueCode" />
 
 <script>
-// Generate unique code on submit
-function generateCode() {
-  const companyName = document.getElementById('companyName').value.trim().substring(0,3).toUpperCase() || 'XXX';
-  const now = new Date();
-  const year = now.getFullYear();
-  const month = (now.getMonth() + 1).toString().padStart(2,'0');
-  const day = now.getDate().toString().padStart(2,'0');
-  const hour = now.getHours().toString().padStart(2,'0');
-  const min = now.getMinutes().toString().padStart(2,'0');
-  const sec = now.getSeconds().toString().padStart(2,'0');
-  return `${companyName}${year}${month}${day}-${hour}${min}${sec}`;
-}
+  const modifyRadios = document.getElementsByName('modifyWeights');
+  const editWeightsTable = document.getElementById('editWeightsTable');
+  const weightInputs = document.querySelectorAll('.weight-input');
+  const weightsTotalDisplay = document.getElementById('weightsTotal');
+  const weightError = document.getElementById('weightError');
+  const submitBtn = document.getElementById('submitBtn');
 
-// Button actions
-document.getElementById('confirmDefault').addEventListener('click', () => {
-  alert('Default weights accepted.');
-  // proceed with submission...
-});
+  // Show/hide editable weights table based on radio
+  modifyRadios.forEach(radio => {
+    radio.addEventListener('change', () => {
+      if (radio.value === 'yes' && radio.checked) {
+        editWeightsTable.style.display = 'table';
+      } else {
+        editWeightsTable.style.display = 'none';
+        weightError.style.display = 'none';
+        submitBtn.disabled = false;
+      }
+    });
+  });
 
-document.getElementById('editWeights').addEventListener('click', () => {
-  document.getElementById('pillarInputs').style.display = 'block';
-});
+  // Calculate and validate total weights
+  function validateWeights() {
+    let total = 0;
+    weightInputs.forEach(input => {
+      const val = parseFloat(input.value);
+      if (!isNaN(val)) {
+        total += val;
+      }
+    });
+    weightsTotalDisplay.textContent = total.toFixed(1);
+    if (total !== 100) {
+      weightError.style.display = 'block';
+      submitBtn.disabled = true;
+    } else {
+      weightError.style.display = 'none';
+      submitBtn.disabled = false;
+    }
+  }
 
-document.getElementById('finalSubmit').addEventListener('click', () => {
-  const code = generateCode();
-  document.getElementById('uniqueCode').value = code;
-  alert(`Submitting with code: ${code}`);
-  // You can add form validation and POST here
-});
+  weightInputs.forEach(input => {
+    input.addEventListener('input', validateWeights);
+  });
+
+  // Unique code generation on submit
+  function generateCode() {
+    const cname = document.getElementById('companyName').value.trim();
+    const prefix = (cname.match(/[a-zA-Z]/g) || ['X','X','X']).slice(0,3).join('').toUpperCase();
+    const now = new Date();
+    const pad = n => n.toString().padStart(2,'0');
+    return `${prefix}${now.getFullYear()}${pad(now.getMonth()+1)}${pad(now.getDate())}` +
+           `-${pad(now.getHours())}${pad(now.getMinutes())}${pad(now.getSeconds())}`;
+  }
+
+  submitBtn.addEventListener('click', () => {
+    const codeField = document.getElementById('uniqueCode');
+    codeField.value = generateCode();
+    alert(`Survey submitted with code ${codeField.value}`);
+    // Implement form validation and sending logic here...
+
+    // Prevent default submit if form exists or send via Ajax/fetch POST
+  });
+
+  // Initialization
+  validateWeights();
 </script>
 
-</div>
 </body>
 </html>
 
